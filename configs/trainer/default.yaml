@@ -1,0 +1,23 @@
+# Everything engineering about the training (the tedious non-research part)
+# See: https://pytorch-lightning.readthedocs.io/en/stable/common/trainer.html
+_target_: pytorch_lightning.Trainer
+
+# See: https://pytorch-lightning.readthedocs.io/en/stable/advanced/multi_gpu.html#select-gpu-devices
+gpus: 1
+
+min_epochs: 1
+max_epochs: 3
+
+# Number of validation steps to execute at the beginning of the training
+# (you don't wanna run expensive training epoch just to crash on validation)
+# num_sanity_val_steps: 0
+
+# Checkpoint path
+resume_from_checkpoint: null
+
+# 16-bit mixed floating-point precision (2x faster training)
+# https://pytorch-lightning.readthedocs.io/en/latest/guides/speed.html#mixed-precision-16-bit-training
+# https://github.com/huggingface/transformers/tree/master/examples/pytorch/text-classification#mixed-precision-training
+precision: 16
+
+gradient_clip_val: 1.0

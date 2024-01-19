@@ -1,0 +1,10 @@
+# @package _global_
+
+# To execute this experiment run:
+# python run_glue.py experiment=rte
+
+task:
+  task_name: rte
+  num_labels: 2
+
+exp_name: ${model_name}/${task.task_name}

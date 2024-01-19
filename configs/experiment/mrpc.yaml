@@ -1,0 +1,18 @@
+# @package _global_
+
+# To execute this experiment run:
+# python run_glue.py experiment=mrpc  
+
+defaults:
+  - override /trainer: default.yaml
+
+# MRPC is trained for 5 epochs
+# ref. https://github.com/huggingface/transformers/tree/master/examples/pytorch/text-classification
+trainer:
+  max_epochs: 5
+
+task:
+  task_name: mrpc
+  num_labels: 2
+
+exp_name: ${model_name}/${task.task_name}
