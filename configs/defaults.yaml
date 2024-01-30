@@ -3,12 +3,11 @@
 # `defaults` define default configs for particular modules.
 
 # Elements of this list pattern-match files under config/
-# eg.: `- model: automodel.yaml` refers to config/automodel.yaml
 
 defaults:
   - _self_
   - datamodule: default.yaml
-  - model: automodel.yaml
+  - model: process.yaml
   - logger: 
     - tensorboard.yaml
     - wandb.yaml
