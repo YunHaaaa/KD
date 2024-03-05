@@ -29,7 +29,7 @@ class Pipeline(nn.Module):
                 'last': last layer
                 'all': all layers, stacked vertically
                 'intermediate': layers index 1-4 inclusive
-            debias_mode: sentence|token.
+            mode: sentence|token.
                 'sentence': retruns embeddings of the whole sentence.
                 'token': retruns words embeddings only, as indicated by 'keyword_mask'.
             hf_checkpoint: path to 🤗-compatibile checkpoint
