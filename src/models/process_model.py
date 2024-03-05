@@ -115,17 +115,15 @@ class ProcessModel(LightningModule):
         loss = self.step(batch)
         self.log_loss(loss, 'validation')
 
-    @property
     def total_train_steps(self):
         num_devices = 1
-        if self.trainer.gpus and self.trainer.gpus > 0:
-            if isinstance(self.trainer.gpus, list):
-                num_devices = len(self.trainer.gpus)
+        if self.trainer.num_devices and self.trainer.num_devices > 0:
+            if isinstance(self.trainer.num_devices, list):
+                num_devices = len(self.trainer.num_devices)
             else:
-                num_devices = self.trainer.gpus
+                num_devices = self.trainer.num_devices
 
-        # Be carefull: trainloader is a dict of loaders of equal length
-        num_samples = len(self.train_dataloader()["targets"])
+        num_samples = len(self.trainer.datamodule.train_dataloader())
         train_batches = num_samples // num_devices
         total_epochs = self.trainer.max_epochs - self.trainer.min_epochs + 1
 
@@ -142,7 +140,7 @@ class ProcessModel(LightningModule):
         scheduler = get_linear_schedule_with_warmup(
             optimizer,
             num_warmup_steps=self.warmup_steps,
-            num_training_steps=self.total_train_steps
+            num_training_steps=self.total_train_steps()
         )
 
         return {"optimizer": optimizer, "lr_scheduler": scheduler}
