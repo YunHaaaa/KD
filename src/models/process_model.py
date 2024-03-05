@@ -5,7 +5,7 @@ import torch
 from pytorch_lightning import LightningModule
 
 
-from utils.utils import get_logger
+from src.utils.utils import get_logger
 from src.models.modules.pipeline import Pipeline
 
 from transformers import AdamW, get_linear_schedule_with_warmup
