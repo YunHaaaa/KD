@@ -21,7 +21,7 @@ Will run 3*2 = 6.
 ```bash
 python run_glue.py --multirun \
     experiment=cola,wnli,mrpc \
-    trainer.gpus=2 \           # 2 gpus per task
+    trainer.num_devices=2 \           # 2 gpus per task
     trainer.precision=16 \     # Mixed 16FP precision
     datamodule.batch_size=256  # Beefy batch size
 ```
