@@ -1,6 +1,7 @@
 # @package _global_
 
 # `defaults` define default configs for particular modules.
+version_base: 1.1
 
 # Elements of this list pattern-match files under config/
 
