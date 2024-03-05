@@ -6,7 +6,7 @@ from omegaconf import DictConfig
 def main(config: DictConfig):
 
     from src.finetune import finetune
-    from src.utils import print_config
+    from src.utils.utils import print_config
 
     print_config(config, resolve=True)
 
