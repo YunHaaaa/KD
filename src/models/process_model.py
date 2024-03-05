@@ -66,6 +66,7 @@ class ProcessModel(LightningModule):
         assert attributes.shape == attributes_original.shape
         return (attributes - attributes_original).pow(2).sum(1).mean()
 
+    # TODO: add teacher, student kd loss
     def step(self, batch) -> Dict[str, float]:
         loss = self.loss_alpha  + self.loss_beta 
 
@@ -106,7 +107,7 @@ class ProcessModel(LightningModule):
     def training_step(self, batch: Any, batch_idx: int):
         loss = self.step(batch)
         self.log_loss(loss, 'train')
-        return loss["loss"]
+        return loss
 
     def training_epoch_end(self, outputs: List[Any]):
         pass
