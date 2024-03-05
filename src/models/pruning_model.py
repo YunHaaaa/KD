@@ -25,6 +25,7 @@ class PruningModel(ProcessModel):
     def __post_init__(self):
         super().__post_init__()
 
+        # TODO: load pruning teacher model
         if self.model_name != 'bert-base-uncased':
             raise ValueError("Only bert-base-uncased is available for prunning.")
 
@@ -87,7 +88,7 @@ class PruningModel(ProcessModel):
     def forward(self, inputs, return_word_embs=None, embedding_layer=None):
         self.model_patcher.schedule_threshold(
             step=self.global_step,
-            total_step=self.total_train_steps,
+            total_step=self.total_train_steps(),
             training=self.training,
         )
         return super().forward(inputs, return_word_embs, embedding_layer)
@@ -133,7 +134,7 @@ class PruningModel(ProcessModel):
         scheduler = get_linear_schedule_with_warmup(
             optimizer,
             num_warmup_steps=self.warmup_steps,
-            num_training_steps=self.total_train_steps
+            num_training_steps=self.total_train_steps()
         )
 
         return {"optimizer": optimizer, "lr_scheduler": scheduler}

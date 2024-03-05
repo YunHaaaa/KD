@@ -5,7 +5,7 @@ import torch
 from pytorch_lightning import LightningModule
 
 
-from utils.utils import get_logger
+from src.utils.utils import get_logger
 from src.models.modules.pipeline import Pipeline
 
 from transformers import AdamW, get_linear_schedule_with_warmup
@@ -66,6 +66,7 @@ class ProcessModel(LightningModule):
         assert attributes.shape == attributes_original.shape
         return (attributes - attributes_original).pow(2).sum(1).mean()
 
+    # TODO: add teacher, student kd loss
     def step(self, batch) -> Dict[str, float]:
         loss = self.loss_alpha  + self.loss_beta 
 
@@ -106,7 +107,7 @@ class ProcessModel(LightningModule):
     def training_step(self, batch: Any, batch_idx: int):
         loss = self.step(batch)
         self.log_loss(loss, 'train')
-        return loss["loss"]
+        return loss
 
     def training_epoch_end(self, outputs: List[Any]):
         pass
@@ -115,17 +116,15 @@ class ProcessModel(LightningModule):
         loss = self.step(batch)
         self.log_loss(loss, 'validation')
 
-    @property
     def total_train_steps(self):
         num_devices = 1
-        if self.trainer.gpus and self.trainer.gpus > 0:
-            if isinstance(self.trainer.gpus, list):
-                num_devices = len(self.trainer.gpus)
+        if self.trainer.num_devices and self.trainer.num_devices > 0:
+            if isinstance(self.trainer.num_devices, list):
+                num_devices = len(self.trainer.num_devices)
             else:
-                num_devices = self.trainer.gpus
+                num_devices = self.trainer.num_devices
 
-        # Be carefull: trainloader is a dict of loaders of equal length
-        num_samples = len(self.train_dataloader()["targets"])
+        num_samples = len(self.trainer.datamodule.train_dataloader())
         train_batches = num_samples // num_devices
         total_epochs = self.trainer.max_epochs - self.trainer.min_epochs + 1
 
@@ -142,7 +141,7 @@ class ProcessModel(LightningModule):
         scheduler = get_linear_schedule_with_warmup(
             optimizer,
             num_warmup_steps=self.warmup_steps,
-            num_training_steps=self.total_train_steps
+            num_training_steps=self.total_train_steps()
         )
 
         return {"optimizer": optimizer, "lr_scheduler": scheduler}
